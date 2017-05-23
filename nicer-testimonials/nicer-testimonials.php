@@ -29,8 +29,8 @@ function nt_install () {
 	status tinytext NOT NULL,
 	PRIMARY KEY  (id)
 	) $charset_collate;";
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-dbDelta( $sql );
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
 }
 
 // populate database
@@ -52,8 +52,8 @@ function nt_first_data() {
 			'comments' => $nt_comments,
 			'rating' => $nt_rating,
 			'status' => $nt_status
-		) 
-	);
+			) 
+		);
 }
 
 // drop table
@@ -96,7 +96,7 @@ function nt_add_menu_page() {
 		'nt_render_reviews_page',                                   // Callback Function
 		'',                                                         // Icon Url
 		3                                                           // Position
-	);
+		);
 }
 
 function nt_render_reviews_page() {
@@ -106,32 +106,26 @@ function nt_render_reviews_page() {
 	$nt_list_table->prepare_items();
 	?>
 	<div class="wrap">
-	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-	<!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
-	<form id="nt-reviews-filter" method="get">
-		<!-- For plugins, we also need to ensure that the form posts back to our current page -->
-		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-		<!-- Now we can render the completed list table -->
-		<?php $nt_list_table->display() ?>
-	</form>
+		<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+		<!-- Forms are NOT created automatically, so you need to wrap the table in one to use features like bulk actions -->
+		<form id="nt-reviews-filter" method="get">
+			<!-- For plugins, we also need to ensure that the form posts back to our current page -->
+			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+			<!-- Now we can render the completed list table -->
+			<?php $nt_list_table->display() ?>
+		</form>
 
-</div>
-<?php 
+	</div>
+	<?php 
 }
 
-// stylesheet for the list table
-add_action( 'admin_head', 'nt_testimonials_table_styles' );
+// create options for the plugin
+add_action( 'admin_init', 'nt_settings_init' );
 
-function nt_testimonials_table_styles() {
-		echo '<style type="text/css">';
-		echo '.toplevel_page_nt-reviews-list  .wp-list-table .id, .toplevel_page_nt-reviews-list  .wp-list-table .column-id { width: 5%; }';
-		echo '.toplevel_page_nt-reviews-list  .wp-list-table .name, .toplevel_page_nt-reviews-list  .wp-list-table .column-name { width: 30%; }';
-		echo '.toplevel_page_nt-reviews-list  .wp-list-table .comments, .toplevel_page_nt-reviews-list  .wp-list-table .column-comments  { width: 45%; }';
-		echo '.toplevel_page_nt-reviews-list  .wp-list-table .rating, .toplevel_page_nt-reviews-list  .wp-list-table .column-rating { width: 10%; }';
-		echo '.toplevel_page_nt-reviews-list  .wp-list-table .status, .toplevel_page_nt-reviews-list  .wp-list-table .column-status { width: 10%; }';
-		echo '</style>';
+function nt_settings_init(){
+	register_setting( 'nt_options_group', 'nt_fields');
+	register_setting( 'nt_options_group', 'nt_form_layout');
 }
-
 
 // add a settings pages
 add_action( 'admin_menu', 'nt_add_settings_page' );
@@ -141,49 +135,94 @@ function nt_add_settings_page(){
 	'nt-reviews-list',                    //Parent
 	__('Nicer Testimonials Settings'),    //Page Title
 	__('Settings'),                       //Menu Title
-	'edit_theme_options',                 //Capabilities
+	'administrator',                 //Capabilities
 	'nt-reviews-settings',                // Slug
 	'nt_render_settings_page');           //Callback
 }
 
 function nt_render_settings_page(){ 	?>
-	<div class="wrap">
-<h1>Nicer Testimonials Settings</h1>
-<form method="post" action="options.php"> 
-<?php settings_fields( 'nt_options_group' ); ?>
-<?php $nt_options = get_option('nt_options') ?>
-
-	<table class="form-table">
-		   <tr valign="top">
-			 <th scope="row">
-				<?php _e( 'Phone'); ?>
-			 </th>
-			 <td>
-				<input id="nt_options[phone]" type="text" name="nt_options[phone]" value="" class="regular-text" />
-			 </td>
-		   </tr>
+<div class="wrap">
+	<h1>Nicer Testimonials Settings</h1>
+	<form method="post" action="options.php"> 
+		<?php settings_fields( 'nt_options_group' ); ?>
+		<?php do_settings_sections( 'nt_options_group' ); ?>
+		<?php $nt_fields = get_option('nt_fields') ?>
+		<div class="nt_tab_links">
+			<a href="nt_tab1" class="nt_active">Create your form fields</a>
+			<a href="nt_tab2">Set your form layout </a>
+		</div>
+		<div id="nt_tab1" class="nt_tab nt_active">
+			<h2> Create your form fields </h2>
+			<table class="form-table">
+				<tr>
+					
+					<th>Field Name<br>
+					<th>Field Tag</th>
+					<th>Field Type</th>
+					<th>Validation</th>
+				</tr>
+				<tr valign="top">
+					<td>
+						<input id="nt_fields[0][name]" type="text" name="nt_fields[0][name]" value="<?php echo $nt_fields['0']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+					</td>
+					<td><input id="nt_fields[0][tag]" type="text" name="nt_fields[0][tag]" value="<?php echo $nt_fields['0']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+					<td>
+						<select name="nt_fields[0][type]" id="nt_fields[0][type]">
+							<option value="text" <?php selected($nt_fields['0']['type'], 'text' ); ?>>Text</option>
+							<option value="textarea" <?php selected($nt_fields['0']['type'], 'textarea' ); ?>>Textarea</option>
+							<option value="rating" <?php selected($nt_fields['0']['type'], 'rating' ); ?>>Rating</option>
+						</select>
+					</td>
+					<td>
+						<input type="checkbox" name="nt_fields[0][val][req]" value="required" <?php checked($nt_fields['0']['val']['req'], 'required' ); ?>>Required<br>
+						<input type="checkbox" name="nt_fields[0][val][phone]" value="phone" <?php checked($nt_fields['0']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+						<input type="checkbox" name="nt_fields[0][val][email]" value="email"  <?php checked($nt_fields['0']['val']['email'], 'email' ); ?>>Email Address<br>
+					</td>
+				</tr>
+				<tr valign="top">
+					<td>
+						<input id="nt_fields[1][name]" type="text" name="nt_fields[1][name]" value="<?php echo $nt_fields['1']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+					</td>
+					<td><input id="nt_fields[1][tag]" type="text" name="nt_fields[1][tag]" value="<?php echo $nt_fields['1']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+					<td>
+						<select name="nt_fields[1][type]" id="nt_fields[1][type]">
+							<option value="text" <?php selected($nt_fields['1']['type'], 'text' ); ?>>Text</option>
+							<option value="textarea" <?php selected($nt_fields['1']['type'], 'textarea' ); ?>>Textarea</option>
+							<option value="rating" <?php selected($nt_fields['1']['type'], 'rating' ); ?>>Rating</option>
+						</select>
+					</td>
+					<td>
+						<input type="checkbox" name="nt_fields[1][val][req]" value="required" <?php checked($nt_fields['1']['val']['req'], 'required' ); ?>>Required<br>
+						<input type="checkbox" name="nt_fields[1][val][phone]" value="phone" <?php checked($nt_fields['1']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+						<input type="checkbox" name="nt_fields[1][val][email]" value="email"  <?php checked($nt_fields['1']['val']['email'], 'email' ); ?>>Email Address<br>
+					</td>
+				</tr>
 		</table>
+		<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
 
-<?php submit_button(); ?>
+	</div>
+	<div id="nt_tab2" class="nt_tab">
+		<h2>Form Layout</h2>
+		<p>Available inputs:
+			<?php foreach ($nt_fields as $key){
+				echo ' '.$key['tag'];
+			}?>
+
+			
+		</p>
+		<textarea name="nt_form_layout" id="nt_form_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_form_layout')); ?></textarea>
+		<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
+	</div>
+
+	<?php echo "<pre>"; echo var_dump($nt_fields); echo "</pre>"; ?>
+
+	<?php //submit_button(); ?>
 </form>
 </div>
 <?php
 }
 
-// create options for the plugin
-add_action( 'admin_init', 'nt_settings_init' );
 
-function nt_settings_init(){
-	register_setting( 'nt_options_group', 'nt_options');
-}
-
-// register,localize, and equeue the list table scripts
-function nt_list_table_scripts() {
-	wp_register_script( 'nt_list_table_scripts',plugin_dir_url( __FILE__ ) . 'scripts/nt_list_table_scripts.js', array( 'jquery' ));
-	wp_localize_script( 'nt_list_table_scripts', 'nt_list_table_params', ['ajaxurl' => admin_url( 'admin-ajax.php', $protocol )] );
-	wp_enqueue_script( 'nt_list_table_scripts' );
-}
-add_action( 'admin_enqueue_scripts', 'nt_list_table_scripts' ); 
 
 
 // set review to approved
@@ -209,3 +248,35 @@ function nt_del_rev(){
 }
 add_action( 'wp_ajax_nt_del_rev','nt_del_rev');
 
+
+function nt_display_form(){
+	$nt_fields = get_option('nt_fields');
+	$nt_layout = get_option('nt_form_layout');
+
+
+	foreach ($nt_fields as $key){
+		$nt_layout = str_replace($key['tag'],'<input type="text" name="'.str_replace(array( '[', ']' ), '', $key['tag']).'">', $nt_layout);
+	}
+	return  '<form class="nt_review_form">'.$nt_layout.'</form>';
+}
+
+// shortcodes
+add_shortcode( 'nt_display_form', 'nt_display_form' );
+
+
+// admin styles
+function load_nt_admin_styles(){
+    wp_register_style( 'nt_admin_styles', plugin_dir_url( __FILE__ ) . 'styles/nt_admin.css', false, '1.0.0' );
+    wp_enqueue_style( 'nt_admin_styles' );
+}
+add_action('admin_enqueue_scripts', 'load_nt_admin_styles');
+
+
+
+// register,localize, and equeue the list table scripts
+function nt_admin_scripts() {
+	wp_register_script( 'nt_admin_scripts',plugin_dir_url( __FILE__ ) . 'scripts/nt_admin_scripts.js', array( 'jquery' ));
+	wp_localize_script( 'nt_admin_scripts', 'nt_list_table_params', ['ajaxurl' => admin_url( 'admin-ajax.php', $protocol )] );
+	wp_enqueue_script( 'nt_admin_scripts' );
+}
+add_action( 'admin_enqueue_scripts', 'nt_admin_scripts' ); 

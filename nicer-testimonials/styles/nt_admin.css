@@ -1,0 +1,17 @@
+/*the reviews list table*/
+.toplevel_page_nt-reviews-list  .wp-list-table .id, .toplevel_page_nt-reviews-list  .wp-list-table .column-id { width: 5%; }
+.toplevel_page_nt-reviews-list  .wp-list-table .name, .toplevel_page_nt-reviews-list  .wp-list-table .column-name { width: 30%; }
+.toplevel_page_nt-reviews-list  .wp-list-table .comments, .toplevel_page_nt-reviews-list  .wp-list-table .column-comments  { width: 45%; }
+.toplevel_page_nt-reviews-list  .wp-list-table .rating, .toplevel_page_nt-reviews-list  .wp-list-table .column-rating { width: 10%; }
+.toplevel_page_nt-reviews-list  .wp-list-table .status, .toplevel_page_nt-reviews-list  .wp-list-table .column-status { width: 10%; }
+
+/*the settings page*/
+.nt_tab {box-sizing: border-box;padding: 15px;border:1px solid #ddd;border-radius: 5px}
+.nt_tab:not(.nt_active){display: none}
+#nt_form_layout {width: 100%;display: block;margin: 0 auto 10px}
+.nt_tab_links {position: relative;top:1px;}
+.nt_tab_links a {display: inline-block;padding: 10px;border-radius: 3px;border:1px solid #ddd;color:inherit;text-decoration: none;font-weight: 700}
+.nt_tab_links a:focus {box-shadow: none}
+.nt_tab_links a.nt_active {border-bottom:1px solid #F1F1F1;border-radius: 3px 3px 0 0}
+
+

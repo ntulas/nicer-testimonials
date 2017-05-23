@@ -1,3 +1,5 @@
+// the list table scripts
+
 jQuery(document).ready(function($){
 	$(".nt-app-rev").click(function(e){
 		var app_btn = $(this);
@@ -42,4 +44,24 @@ jQuery(document).ready(function($){
 			}
 		});
 	});
+
+
+// settings page
+
+// on tab click
+$(".nt_tab_links a").click(function(e){
+	e.preventDefault();
+	$(".nt_tab_links a").not(this).removeClass("nt_active")
+	$(this).addClass("nt_active")
+	var target_tab = $(this).attr("href");
+	$(".nt_tab").not("#"+target_tab).removeClass("nt_active")
+	$("#"+target_tab).addClass("nt_active");
 });
+
+// input tag generator
+$(".nt_input_name").change(function(){
+	$(this).closest('tr').find('.nt_input_tag').val('['+$(this).val().replace(/ /g,"_").toLowerCase()+']');
+})
+
+});
+
