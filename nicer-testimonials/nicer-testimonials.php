@@ -260,12 +260,14 @@ function nt_render_settings_page(){ 	?>
 				<p>Available inputs:
 					<?php foreach ($nt_fields as $key){
 						echo ' '.$key['tag'];
-					}?>
+					}
+
+					echo "[submit]";?>
 
 
 				</p>
 				<textarea name="nt_form_layout" id="nt_form_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_form_layout')); ?></textarea>
-				<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
+				<input type="submit" value="<?php _e( 'Save Form'); ?>" class="button button-primary" />
 			</div>
 			
 
@@ -338,7 +340,31 @@ function nt_display_form(){
 
 
 	foreach ($nt_fields as $key){
-		$nt_layout = str_replace($key['tag'],'<input type="text" name="'.str_replace(array( '[', ']' ), '', $key['tag']).'">', $nt_layout);
+		$nt_tag = str_replace(array( '[', ']' ), '', $key['tag']);
+		switch ($key['type']) {
+			case 'textarea':
+				$nt_layout = str_replace($key['tag'],'<textarea name="'.$nt_tag.'" class="nt-textarea nt-textarea-'.$nt_tag.' nt-input-'.$nt_tag.'"></textarea>', $nt_layout);
+				break;
+			case 'rating':
+				$nt_layout = str_replace($key['tag'],'<div class="nt-stars-contain nt-stars-contain-'.$nt_tag.'"><div class="nt-stars" data-str-target="'.$nt_tag.'"">
+			<div class="nt-stars-half nt-star-half-left" data-rating="0.5"></div>
+			<div class="nt-stars-half nt-star-half-right" data-rating="1.0"></div>
+			<div class="nt-stars-half nt-star-half-left" data-rating="1.5"></div>
+			<div class="nt-stars-half nt-star-half-right" data-rating="2.0"></div>
+			<div class="nt-stars-half nt-star-half-left" data-rating="2.5"></div>
+			<div class="nt-stars-half nt-star-half-right" data-rating="3.0"></div>
+			<div class="nt-stars-half nt-star-half-left" data-rating="3.5"></div>
+			<div class="nt-stars-half nt-star-half-right" data-rating="4.0"></div>
+			<div class="nt-stars-half nt-star-half-left" data-rating="4.5"></div>
+			<div class="nt-stars-half nt-star-half-right" data-rating="5.0"></div>
+		</div>
+		<input class="nt-current-rating nt-current-rating-'.$nt_tag.' nt-input-'.$nt_tag.'" value="" type="text" readonly name="'.$nt_tag.'"></div>', $nt_layout);
+				break;
+			default:
+				$nt_layout = str_replace($key['tag'],'<input type="text" class="nt-text nt-text-'.$nt_tag.' nt-input-'.$nt_tag.'" name="'.$nt_tag.'">', $nt_layout);
+				break;
+		}
+		
 	}
 	return  '<form class="nt_review_form">'.$nt_layout.'</form>';
 }
@@ -354,6 +380,12 @@ function load_nt_admin_styles(){
 }
 add_action('admin_enqueue_scripts', 'load_nt_admin_styles');
 
+//frontend styles
+function load_nt_styles(){
+	wp_register_style( 'nt_styles', plugin_dir_url( __FILE__ ) . 'styles/nt_styles.css', false, '1.0.0' );
+	wp_enqueue_style( 'nt_styles' );
+}
+add_action('wp_enqueue_scripts', 'load_nt_styles');
 
 
 // register,localize, and equeue the list table scripts
@@ -363,3 +395,11 @@ function nt_admin_scripts() {
 	wp_enqueue_script( 'nt_admin_scripts' );
 }
 add_action( 'admin_enqueue_scripts', 'nt_admin_scripts' ); 
+
+//front end scripts
+function nt_scripts() {
+	wp_register_script( 'nt_scripts',plugin_dir_url( __FILE__ ) . 'scripts/nt_scripts.js', array( 'jquery' ));
+	wp_localize_script( 'nt_scripts', 'nt_params', ['ajaxurl' => admin_url( 'admin-ajax.php', $protocol )] );
+	wp_enqueue_script( 'nt_scripts' );
+}
+add_action( 'wp_enqueue_scripts', 'nt_scripts' ); 

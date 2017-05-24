@@ -1,0 +1,7 @@
+.nt-stars {font-size: 0;}
+.nt-stars-half {width: 30px;height: 57px;display: inline-block;vertical-align: top}
+.nt-stars-half:hover {cursor: pointer;}
+.nt-star-half-left {background: url("../images/star-left-nofill.png");}
+.nt-star-half-right {background: url("../images/star-right-nofill.png");}
+.nt-star-half-left.nt-hover-rating {background: url("../images/star-left.png")}
+.nt-star-half-right.nt-hover-rating {background: url("../images/star-right.png")}
