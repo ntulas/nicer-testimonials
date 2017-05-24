@@ -157,72 +157,155 @@ function nt_render_settings_page(){ 	?>
 				<tr>
 					
 					<th>Field Name<br>
-					<th>Field Tag</th>
-					<th>Field Type</th>
-					<th>Validation</th>
-				</tr>
-				<tr valign="top">
-					<td>
-						<input id="nt_fields[0][name]" type="text" name="nt_fields[0][name]" value="<?php echo $nt_fields['0']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
-					</td>
-					<td><input id="nt_fields[0][tag]" type="text" name="nt_fields[0][tag]" value="<?php echo $nt_fields['0']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
-					<td>
-						<select name="nt_fields[0][type]" id="nt_fields[0][type]">
-							<option value="text" <?php selected($nt_fields['0']['type'], 'text' ); ?>>Text</option>
-							<option value="textarea" <?php selected($nt_fields['0']['type'], 'textarea' ); ?>>Textarea</option>
-							<option value="rating" <?php selected($nt_fields['0']['type'], 'rating' ); ?>>Rating</option>
-						</select>
-					</td>
-					<td>
-						<input type="checkbox" name="nt_fields[0][val][req]" value="required" <?php checked($nt_fields['0']['val']['req'], 'required' ); ?>>Required<br>
-						<input type="checkbox" name="nt_fields[0][val][phone]" value="phone" <?php checked($nt_fields['0']['val']['phone'], 'phone' ); ?>>Phone Number<br>
-						<input type="checkbox" name="nt_fields[0][val][email]" value="email"  <?php checked($nt_fields['0']['val']['email'], 'email' ); ?>>Email Address<br>
-					</td>
-				</tr>
-				<tr valign="top">
-					<td>
-						<input id="nt_fields[1][name]" type="text" name="nt_fields[1][name]" value="<?php echo $nt_fields['1']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
-					</td>
-					<td><input id="nt_fields[1][tag]" type="text" name="nt_fields[1][tag]" value="<?php echo $nt_fields['1']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
-					<td>
-						<select name="nt_fields[1][type]" id="nt_fields[1][type]">
-							<option value="text" <?php selected($nt_fields['1']['type'], 'text' ); ?>>Text</option>
-							<option value="textarea" <?php selected($nt_fields['1']['type'], 'textarea' ); ?>>Textarea</option>
-							<option value="rating" <?php selected($nt_fields['1']['type'], 'rating' ); ?>>Rating</option>
-						</select>
-					</td>
-					<td>
-						<input type="checkbox" name="nt_fields[1][val][req]" value="required" <?php checked($nt_fields['1']['val']['req'], 'required' ); ?>>Required<br>
-						<input type="checkbox" name="nt_fields[1][val][phone]" value="phone" <?php checked($nt_fields['1']['val']['phone'], 'phone' ); ?>>Phone Number<br>
-						<input type="checkbox" name="nt_fields[1][val][email]" value="email"  <?php checked($nt_fields['1']['val']['email'], 'email' ); ?>>Email Address<br>
-					</td>
-				</tr>
-		</table>
-		<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
+						<th>Field Tag</th>
+						<th>Field Type</th>
+						<th>Validation</th>
+					</tr>
+					<tr valign="top">
+						<td>
+							<input id="nt_fields[0][name]" type="text" name="nt_fields[0][name]" value="<?php echo $nt_fields['0']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+						</td>
+						<td><input id="nt_fields[0][tag]" type="text" name="nt_fields[0][tag]" value="<?php echo $nt_fields['0']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+						<td>
+							<select name="nt_fields[0][type]" id="nt_fields[0][type]">
+								<option value="text" <?php selected($nt_fields['0']['type'], 'text' ); ?>>Text</option>
+								<option value="textarea" <?php selected($nt_fields['0']['type'], 'textarea' ); ?>>Textarea</option>
+								<option value="rating" <?php selected($nt_fields['0']['type'], 'rating' ); ?>>Rating</option>
+							</select>
+						</td>
+						<td>
+							<input type="checkbox" name="nt_fields[0][val][req]" value="required" <?php checked($nt_fields['0']['val']['req'], 'required' ); ?>>Required<br>
+							<input type="checkbox" name="nt_fields[0][val][phone]" value="phone" <?php checked($nt_fields['0']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+							<input type="checkbox" name="nt_fields[0][val][email]" value="email"  <?php checked($nt_fields['0']['val']['email'], 'email' ); ?>>Email Address<br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td>
+							<input id="nt_fields[1][name]" type="text" name="nt_fields[1][name]" value="<?php echo $nt_fields['1']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+						</td>
+						<td><input id="nt_fields[1][tag]" type="text" name="nt_fields[1][tag]" value="<?php echo $nt_fields['1']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+						<td>
+							<select name="nt_fields[1][type]" id="nt_fields[1][type]">
+								<option value="text" <?php selected($nt_fields['1']['type'], 'text' ); ?>>Text</option>
+								<option value="textarea" <?php selected($nt_fields['1']['type'], 'textarea' ); ?>>Textarea</option>
+								<option value="rating" <?php selected($nt_fields['1']['type'], 'rating' ); ?>>Rating</option>
+							</select>
+						</td>
+						<td>
+							<input type="checkbox" name="nt_fields[1][val][req]" value="required" <?php checked($nt_fields['1']['val']['req'], 'required' ); ?>>Required<br>
+							<input type="checkbox" name="nt_fields[1][val][phone]" value="phone" <?php checked($nt_fields['1']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+							<input type="checkbox" name="nt_fields[1][val][email]" value="email"  <?php checked($nt_fields['1']['val']['email'], 'email' ); ?>>Email Address<br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td>
+							<input id="nt_fields[3][name]" type="text" name="nt_fields[3][name]" value="<?php echo $nt_fields['3']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+						</td>
+						<td><input id="nt_fields[3][tag]" type="text" name="nt_fields[3][tag]" value="<?php echo $nt_fields['3']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+						<td>
+							<select name="nt_fields[3][type]" id="nt_fields[3][type]">
+								<option value="text" <?php selected($nt_fields['3']['type'], 'text' ); ?>>Text</option>
+								<option value="textarea" <?php selected($nt_fields['3']['type'], 'textarea' ); ?>>Textarea</option>
+								<option value="rating" <?php selected($nt_fields['3']['type'], 'rating' ); ?>>Rating</option>
+							</select>
+						</td>
+						<td>
+							<input type="checkbox" name="nt_fields[3][val][req]" value="required" <?php checked($nt_fields['3']['val']['req'], 'required' ); ?>>Required<br>
+							<input type="checkbox" name="nt_fields[3][val][phone]" value="phone" <?php checked($nt_fields['3']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+							<input type="checkbox" name="nt_fields[3][val][email]" value="email"  <?php checked($nt_fields['3']['val']['email'], 'email' ); ?>>Email Address<br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td>
+							<input id="nt_fields[4][name]" type="text" name="nt_fields[4][name]" value="<?php echo $nt_fields['4']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+						</td>
+						<td><input id="nt_fields[4][tag]" type="text" name="nt_fields[4][tag]" value="<?php echo $nt_fields['4']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+						<td>
+							<select name="nt_fields[4][type]" id="nt_fields[4][type]">
+								<option value="text" <?php selected($nt_fields['4']['type'], 'text' ); ?>>Text</option>
+								<option value="textarea" <?php selected($nt_fields['4']['type'], 'textarea' ); ?>>Textarea</option>
+								<option value="rating" <?php selected($nt_fields['4']['type'], 'rating' ); ?>>Rating</option>
+							</select>
+						</td>
+						<td>
+							<input type="checkbox" name="nt_fields[4][val][req]" value="required" <?php checked($nt_fields['4']['val']['req'], 'required' ); ?>>Required<br>
+							<input type="checkbox" name="nt_fields[4][val][phone]" value="phone" <?php checked($nt_fields['4']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+							<input type="checkbox" name="nt_fields[4][val][email]" value="email"  <?php checked($nt_fields['4']['val']['email'], 'email' ); ?>>Email Address<br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td>
+							<input id="nt_fields[5][name]" type="text" name="nt_fields[5][name]" value="<?php echo $nt_fields['5']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+						</td>
+						<td><input id="nt_fields[5][tag]" type="text" name="nt_fields[5][tag]" value="<?php echo $nt_fields['5']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+						<td>
+							<select name="nt_fields[5][type]" id="nt_fields[5][type]">
+								<option value="text" <?php selected($nt_fields['5']['type'], 'text' ); ?>>Text</option>
+								<option value="textarea" <?php selected($nt_fields['5']['type'], 'textarea' ); ?>>Textarea</option>
+								<option value="rating" <?php selected($nt_fields['5']['type'], 'rating' ); ?>>Rating</option>
+							</select>
+						</td>
+						<td>
+							<input type="checkbox" name="nt_fields[5][val][req]" value="required" <?php checked($nt_fields['5']['val']['req'], 'required' ); ?>>Required<br>
+							<input type="checkbox" name="nt_fields[5][val][phone]" value="phone" <?php checked($nt_fields['5']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+							<input type="checkbox" name="nt_fields[5][val][email]" value="email"  <?php checked($nt_fields['5']['val']['email'], 'email' ); ?>>Email Address<br>
+						</td>
+					</tr>
+				</table>
+				<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
 
-	</div>
-	<div id="nt_tab2" class="nt_tab">
-		<h2>Form Layout</h2>
-		<p>Available inputs:
-			<?php foreach ($nt_fields as $key){
-				echo ' '.$key['tag'];
-			}?>
+			</div>
+			<div id="nt_tab2" class="nt_tab">
+				<h2>Form Layout</h2>
+				<p>Available inputs:
+					<?php foreach ($nt_fields as $key){
+						echo ' '.$key['tag'];
+					}?>
 
+
+				</p>
+				<textarea name="nt_form_layout" id="nt_form_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_form_layout')); ?></textarea>
+				<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
+			</div>
 			
-		</p>
-		<textarea name="nt_form_layout" id="nt_form_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_form_layout')); ?></textarea>
-		<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
+
+			<?php //submit_button(); ?>
+		</form>
 	</div>
-
-	<?php echo "<pre>"; echo var_dump($nt_fields); echo "</pre>"; ?>
-
-	<?php //submit_button(); ?>
-</form>
-</div>
-<?php
+	<?php
 }
 
 
+// on nt_fields update
+
+add_action('updated_option', 'update_nt_fields'); 
+function update_nt_fields() { 
+	global $wpdb;
+	$nt_fields = get_option('nt_fields');
+
+	foreach ($nt_fields as $field){
+		switch ($field['type']) {
+			case 'textarea':
+					$nt_ftype = "text NOT NULL";
+				break;
+			case 'rating':
+					$nt_ftype = "float(2,1)";
+				break;		
+			default:
+					$nt_ftype = "tinytext NOT NULL";
+				break;
+		}
+		$row = $wpdb->get_results(  'SELECT '.str_replace(array( "[", "]" ), "", $field["tag"]).' FROM INFORMATION_SCHEMA.COLUMNS
+		WHERE table_name = "'.$wpdb->prefix.'nicertestimonials" AND column_name = "'.str_replace(array( "[", "]" ), "", $field["tag"]).'"'  );
+		if(empty($row)){
+			$wpdb->query('ALTER TABLE '.$wpdb->prefix.'nicertestimonials ADD '.str_replace(array( "[", "]" ), "", $field["tag"]).' '.$nt_ftype);
+		}
+	}
+
+	
+
+	
+}
 
 
 // set review to approved
@@ -266,8 +349,8 @@ add_shortcode( 'nt_display_form', 'nt_display_form' );
 
 // admin styles
 function load_nt_admin_styles(){
-    wp_register_style( 'nt_admin_styles', plugin_dir_url( __FILE__ ) . 'styles/nt_admin.css', false, '1.0.0' );
-    wp_enqueue_style( 'nt_admin_styles' );
+	wp_register_style( 'nt_admin_styles', plugin_dir_url( __FILE__ ) . 'styles/nt_admin.css', false, '1.0.0' );
+	wp_enqueue_style( 'nt_admin_styles' );
 }
 add_action('admin_enqueue_scripts', 'load_nt_admin_styles');
 
