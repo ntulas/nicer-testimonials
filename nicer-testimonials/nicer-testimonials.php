@@ -62,6 +62,9 @@ function nt_drop_table(){
 	$table_name = $wpdb->prefix . "nicertestimonials"; 
 	$sql ="DROP TABLE IF EXISTS $table_name";
 	$wpdb->query($sql);
+
+	delete_option( 'nt_fields' );
+	delete_option( 'nt_form_layout' );
 }
 
 
@@ -259,10 +262,12 @@ function nt_render_settings_page(){ 	?>
 				<h2>Form Layout</h2>
 				<p>Available inputs:
 					<?php foreach ($nt_fields as $key){
-						echo ' '.$key['tag'];
+							if($key['tag'] != ''){
+						echo ' <code>'.$key['tag'].'</code>';
+						}
 					}
 
-					echo "[submit]";?>
+					echo "<code>[submit]</code>";?>
 
 
 				</p>
@@ -366,11 +371,40 @@ function nt_display_form(){
 		}
 		
 	}
-	return  '<form class="nt_review_form">'.$nt_layout.'</form>';
+	$nt_layout = str_replace('[submit]','<input type="submit" class="nt-submit" value="submit">', $nt_layout);
+	return  '<form action="'.esc_url( admin_url('admin-post.php') ).'" method="post"class="nt_review_form">'.$nt_layout.'<input type="hidden" name="action" value="nt_rating_form"></form>';
 }
 
 // shortcodes
 add_shortcode( 'nt_display_form', 'nt_display_form' );
+
+
+function nt_display_testimonials(){
+	global $wpdb;
+	$fields = "";
+
+	$nt_fields = get_option('nt_fields');
+	$count = count($nt_fields);
+	foreach ($nt_fields as $field) {
+		$nt_tag = str_replace(array( '[', ']' ), '', $field['tag']);
+		if($nt_tag != ''){
+			$fields .= $nt_tag.", ";
+		}
+	}
+	$fields = substr($fields, 0, -2);
+
+	$nt_testis = $wpdb->get_results( 
+	"SELECT ".$fields."
+	FROM wp_nicertestimonials
+	WHERE status = 'approved' 
+	");
+	
+	
+
+	return var_dump($nt_testis);
+}
+add_shortcode( 'nt_display_testimonials_sc', 'nt_display_testimonials' );
+
 
 
 // admin styles
@@ -403,3 +437,33 @@ function nt_scripts() {
 	wp_enqueue_script( 'nt_scripts' );
 }
 add_action( 'wp_enqueue_scripts', 'nt_scripts' ); 
+
+
+add_action( 'admin_post_nopriv_nt_rating_form', 'nt_process_rating_form' );
+add_action( 'admin_post_nt_rating_form', 'nt_process_rating_form' );
+function nt_process_rating_form() {
+  	global $wpdb;
+  	$form = $_POST;
+  	$data = array();
+  	$table = $wpdb->prefix . "nicertestimonials";
+  	foreach ($form as $col => $val) {
+  		if($col != "action"){
+  			$data[$col] = $val;
+  		}
+  	}
+  
+  	if($wpdb->insert( $table, $data)){
+  		 header("Location: http://localhost/naycer.com/");
+  	}
+  	else {
+  		echo "fail";
+  		echo '<pre>';
+  		var_dump($form);
+  		var_dump($data);
+  		var_dump($table);
+  		// var_dump($data);
+  		echo '</pre>';
+  	}
+
+   
+}

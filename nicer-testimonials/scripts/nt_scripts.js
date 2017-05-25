@@ -22,7 +22,7 @@ jQuery(document).ready(function($){
 
 			function ntdecolorStar(){
 				$(this).prevAll().andSelf().removeClass('nt-hover-rating');
-				$(".nt-current-rating").val("0.0");
+				$('.nt-current-rating[name="'+$(this).closest(".nt-stars").data("str-target")+'"]').val("0.0");
 			}
 
 			$(".nt-stars-half").hover(ntcolorStar,ntdecolorStar);
