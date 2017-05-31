@@ -207,7 +207,7 @@ class NT_List_table extends WP_List_Table {
 		// Build edit row action.
 		$edit_query_args = array(
 			'page'   => $page,
-			'action' => 'edit',
+			'action' => 'nt_edit',
 			'review'  => $item['id']
 		);
 

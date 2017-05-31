@@ -8,7 +8,7 @@
 /*the settings page*/
 .nt_tab {box-sizing: border-box;padding: 15px;border:1px solid #ddd;border-radius: 5px}
 .nt_tab:not(.nt_active){display: none}
-#nt_form_layout {width: 100%;display: block;margin: 0 auto 10px}
+#nt_form_layout, #nt_testimonial_layout {width: 100%;display: block;margin: 0 auto 10px}
 .nt_tab_links {position: relative;top:1px;}
 .nt_tab_links a {display: inline-block;padding: 10px;border-radius: 3px;border:1px solid #ddd;color:inherit;text-decoration: none;font-weight: 700}
 .nt_tab_links a:focus {box-shadow: none}

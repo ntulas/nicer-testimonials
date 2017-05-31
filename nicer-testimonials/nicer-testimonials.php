@@ -128,6 +128,7 @@ add_action( 'admin_init', 'nt_settings_init' );
 function nt_settings_init(){
 	register_setting( 'nt_options_group', 'nt_fields');
 	register_setting( 'nt_options_group', 'nt_form_layout');
+	register_setting( 'nt_options_group', 'nt_testimonial_layout');
 }
 
 // add a settings pages
@@ -153,6 +154,7 @@ function nt_render_settings_page(){ 	?>
 		<div class="nt_tab_links">
 			<a href="nt_tab1" class="nt_active">Create your form fields</a>
 			<a href="nt_tab2">Set your form layout </a>
+			<a href="nt_tab3">Set your testimonial layout </a>
 		</div>
 		<div id="nt_tab1" class="nt_tab nt_active">
 			<h2> Create your form fields </h2>
@@ -258,7 +260,7 @@ function nt_render_settings_page(){ 	?>
 				<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
 
 			</div>
-			<div id="nt_tab2" class="nt_tab">
+		<div id="nt_tab2" class="nt_tab">
 				<h2>Form Layout</h2>
 				<p>Available inputs:
 					<?php foreach ($nt_fields as $key){
@@ -273,7 +275,23 @@ function nt_render_settings_page(){ 	?>
 				</p>
 				<textarea name="nt_form_layout" id="nt_form_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_form_layout')); ?></textarea>
 				<input type="submit" value="<?php _e( 'Save Form'); ?>" class="button button-primary" />
-			</div>
+		</div>
+		<div id="nt_tab3" class="nt_tab">
+				<h2>Testimonial Layout</h2>
+				<p>Available inputs:
+					<?php foreach ($nt_fields as $key){
+							if($key['tag'] != ''){
+						echo ' <code>'.$key['tag'].'</code>';
+						}
+					}
+
+					?>
+
+
+				</p>
+				<textarea name="nt_testimonial_layout" id="nt_testimonial_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_testimonial_layout')); ?></textarea>
+				<input type="submit" value="<?php _e( 'Save Form'); ?>" class="button button-primary" />
+		</div>
 			
 
 			<?php //submit_button(); ?>
@@ -285,7 +303,7 @@ function nt_render_settings_page(){ 	?>
 
 // on nt_fields update
 
-add_action('updated_option', 'update_nt_fields'); 
+add_action('update_option_nt_fields', 'update_nt_fields'); 
 function update_nt_fields() { 
 	global $wpdb;
 	$nt_fields = get_option('nt_fields');
@@ -376,14 +394,16 @@ function nt_display_form(){
 }
 
 // shortcodes
-add_shortcode( 'nt_display_form', 'nt_display_form' );
+add_shortcode( 'NT_DISPLAY_FORM', 'nt_display_form' );
 
 
 function nt_display_testimonials(){
 	global $wpdb;
 	$fields = "";
-
+	$nt_testi_layout = get_option('nt_testimonial_layout');
 	$nt_fields = get_option('nt_fields');
+	$nt_testi_string ='<ul class="nt-master-list" >';
+
 	$count = count($nt_fields);
 	foreach ($nt_fields as $field) {
 		$nt_tag = str_replace(array( '[', ']' ), '', $field['tag']);
@@ -399,11 +419,20 @@ function nt_display_testimonials(){
 	WHERE status = 'approved' 
 	");
 	
-	
+	foreach ($nt_testis as $nt_testi){
+		$nt_testi_string .= '<li class="nt-single-review">';
+		$nt_temp = $nt_testi_layout;
 
-	return var_dump($nt_testis);
+		foreach ($nt_testi as $key => $value) {
+			$nt_temp = str_replace('['.$key.']',$value, $nt_temp);
+		}
+
+		$nt_testi_string .= $nt_temp . "</li>";
+	}
+	$nt_testi_string .= '</ul>';
+	return $nt_testi_string;
 }
-add_shortcode( 'nt_display_testimonials_sc', 'nt_display_testimonials' );
+add_shortcode( 'NT_DISPLAY_TESTIMONIALS', 'nt_display_testimonials' );
 
 
 
@@ -451,6 +480,8 @@ function nt_process_rating_form() {
   			$data[$col] = $val;
   		}
   	}
+
+  	$data['status'] = 'unapproved';
   
   	if($wpdb->insert( $table, $data)){
   		 header("Location: http://localhost/naycer.com/");
@@ -467,3 +498,5 @@ function nt_process_rating_form() {
 
    
 }
+
+
