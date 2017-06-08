@@ -13,6 +13,7 @@ Domain Path: /languages
 */
 register_activation_hook( __FILE__, 'nt_install' );
 register_activation_hook( __FILE__, 'nt_first_data' );
+register_activation_hook( __FILE__, 'nt_settings_init' );
 register_deactivation_hook( __FILE__, 'nt_drop_table' );
 
 // create database
@@ -31,6 +32,7 @@ function nt_install () {
 	) $charset_collate;";
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	dbDelta( $sql );
+
 }
 
 // populate database
@@ -56,6 +58,49 @@ function nt_first_data() {
 		);
 }
 
+// create options for the plugin
+// add_action( 'admin_init', 'nt_settings_init' );
+
+function nt_settings_init(){
+	do_action('nt_set_default_setting');
+}
+
+function nt_set_defaults(){
+	register_setting( 'nt_options_group', 'nt_fields');
+	register_setting( 'nt_options_group', 'nt_form_layout');
+	register_setting( 'nt_options_group', 'nt_testimonial_layout');
+
+
+
+	$nt_fields_default = [
+				[
+					"name" => "Name",
+					"tag" => "[name]",
+					"type" => "text"
+				],
+				[
+					"name" => "Rating",
+					"tag" => "[rating]",
+					"type" => "rating"
+				],
+				[
+					"name" => "Comments",
+					"tag" => "[comments]",
+					"type" => "textarea"
+				],
+			
+			];
+	 update_option( 'nt_fields', $nt_fields_default );
+
+	 $nt_form_layout_default = "[name] [rating] [comments][submit]";
+	 update_option ('nt_form_layout',$nt_form_layout_default);
+
+	 $nt_testimonial_layout_default = "<p>Name:[name]</p><p>[rating]</p><p>Comments:[comments]</p>";
+	 update_option ('nt_testimonial_layout',$nt_testimonial_layout_default);
+}
+add_action('nt_set_default_setting','nt_set_defaults');
+
+
 // drop table
 function nt_drop_table(){
 	global $wpdb;
@@ -65,6 +110,7 @@ function nt_drop_table(){
 
 	delete_option( 'nt_fields' );
 	delete_option( 'nt_form_layout' );
+	delete_option( 'nt_testimonial_layout' );
 }
 
 
@@ -123,9 +169,9 @@ function nt_render_reviews_page() {
 }
 
 // create options for the plugin
-add_action( 'admin_init', 'nt_settings_init' );
+add_action( 'admin_init', 'nt_settings_init2' );
 
-function nt_settings_init(){
+function nt_settings_init2(){
 	register_setting( 'nt_options_group', 'nt_fields');
 	register_setting( 'nt_options_group', 'nt_form_layout');
 	register_setting( 'nt_options_group', 'nt_testimonial_layout');
@@ -147,10 +193,20 @@ function nt_add_settings_page(){
 function nt_render_settings_page(){ 	?>
 <div class="wrap">
 	<h1>Nicer Testimonials Settings</h1>
+
+	<p>
+		Use <code>[NT_DISPLAY_FORM]</code> to display the submission form.
+	</p>
+	<p>
+		Use <code>[NT_DISPLAY_TESTIMONIALS]</code> to display the testimonial list.
+	</p>
+	<p> Your are free to style the s**t out of your form and list. Go crazy.</p>
 	<form method="post" action="options.php"> 
 		<?php settings_fields( 'nt_options_group' ); ?>
 		<?php do_settings_sections( 'nt_options_group' ); ?>
-		<?php $nt_fields = get_option('nt_fields') ?>
+
+		<?php $nt_fields = get_option('nt_fields'); ?>
+		
 		<div class="nt_tab_links">
 			<a href="nt_tab1" class="nt_active">Create your form fields</a>
 			<a href="nt_tab2">Set your form layout </a>
@@ -204,6 +260,24 @@ function nt_render_settings_page(){ 	?>
 					</tr>
 					<tr valign="top">
 						<td>
+							<input id="nt_fields[2][name]" type="text" name="nt_fields[2][name]" value="<?php echo $nt_fields['2']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
+						</td>
+						<td><input id="nt_fields[2][tag]" type="text" name="nt_fields[2][tag]" value="<?php echo $nt_fields['2']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
+						<td>
+							<select name="nt_fields[2][type]" id="nt_fields[2][type]">
+								<option value="text" <?php selected($nt_fields['2']['type'], 'text' ); ?>>Text</option>
+								<option value="textarea" <?php selected($nt_fields['2']['type'], 'textarea' ); ?>>Textarea</option>
+								<option value="rating" <?php selected($nt_fields['2']['type'], 'rating' ); ?>>Rating</option>
+							</select>
+						</td>
+						<td>
+							<input type="checkbox" name="nt_fields[2][val][req]" value="required" <?php checked($nt_fields['2']['val']['req'], 'required' ); ?>>Required<br>
+							<input type="checkbox" name="nt_fields[2][val][phone]" value="phone" <?php checked($nt_fields['2']['val']['phone'], 'phone' ); ?>>Phone Number<br>
+							<input type="checkbox" name="nt_fields[2][val][email]" value="email"  <?php checked($nt_fields['2']['val']['email'], 'email' ); ?>>Email Address<br>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td>
 							<input id="nt_fields[3][name]" type="text" name="nt_fields[3][name]" value="<?php echo $nt_fields['3']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
 						</td>
 						<td><input id="nt_fields[3][tag]" type="text" name="nt_fields[3][tag]" value="<?php echo $nt_fields['3']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
@@ -238,30 +312,15 @@ function nt_render_settings_page(){ 	?>
 							<input type="checkbox" name="nt_fields[4][val][email]" value="email"  <?php checked($nt_fields['4']['val']['email'], 'email' ); ?>>Email Address<br>
 						</td>
 					</tr>
-					<tr valign="top">
-						<td>
-							<input id="nt_fields[5][name]" type="text" name="nt_fields[5][name]" value="<?php echo $nt_fields['5']['name']; ?>" class="regular-text nt_input_name" placeholder="Field Name:" />
-						</td>
-						<td><input id="nt_fields[5][tag]" type="text" name="nt_fields[5][tag]" value="<?php echo $nt_fields['5']['tag']; ?>" class="regular-text nt_input_tag" readonly></td>
-						<td>
-							<select name="nt_fields[5][type]" id="nt_fields[5][type]">
-								<option value="text" <?php selected($nt_fields['5']['type'], 'text' ); ?>>Text</option>
-								<option value="textarea" <?php selected($nt_fields['5']['type'], 'textarea' ); ?>>Textarea</option>
-								<option value="rating" <?php selected($nt_fields['5']['type'], 'rating' ); ?>>Rating</option>
-							</select>
-						</td>
-						<td>
-							<input type="checkbox" name="nt_fields[5][val][req]" value="required" <?php checked($nt_fields['5']['val']['req'], 'required' ); ?>>Required<br>
-							<input type="checkbox" name="nt_fields[5][val][phone]" value="phone" <?php checked($nt_fields['5']['val']['phone'], 'phone' ); ?>>Phone Number<br>
-							<input type="checkbox" name="nt_fields[5][val][email]" value="email"  <?php checked($nt_fields['5']['val']['email'], 'email' ); ?>>Email Address<br>
-						</td>
-					</tr>
 				</table>
 				<input type="submit" value="<?php _e( 'Save Fields'); ?>" class="button button-primary" />
 
 			</div>
 		<div id="nt_tab2" class="nt_tab">
 				<h2>Form Layout</h2>
+				<p>
+					*You can add any valid HTML in your form. An example would be to wrap groups of fields in DIVS.
+				</p>
 				<p>Available inputs:
 					<?php foreach ($nt_fields as $key){
 							if($key['tag'] != ''){
@@ -278,6 +337,9 @@ function nt_render_settings_page(){ 	?>
 		</div>
 		<div id="nt_tab3" class="nt_tab">
 				<h2>Testimonial Layout</h2>
+				<p>
+					*You can add any valid HTML in your list.
+				</p>
 				<p>Available inputs:
 					<?php foreach ($nt_fields as $key){
 							if($key['tag'] != ''){
@@ -290,9 +352,9 @@ function nt_render_settings_page(){ 	?>
 
 				</p>
 				<textarea name="nt_testimonial_layout" id="nt_testimonial_layout" cols="30" rows="10"><?php echo stripslashes(get_option('nt_testimonial_layout')); ?></textarea>
+				
 				<input type="submit" value="<?php _e( 'Save Form'); ?>" class="button button-primary" />
 		</div>
-			
 
 			<?php //submit_button(); ?>
 		</form>
@@ -498,5 +560,8 @@ function nt_process_rating_form() {
 
    
 }
+
+
+
 
 
